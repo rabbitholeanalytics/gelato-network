@@ -245,8 +245,11 @@ contract GelatoCore is IGelatoCore, GelatoExecutors {
     enum ExecutorPay { Reward, Refund }
 
     // Execution Entry Point: tx.gasprice must be greater or equal to _getGelatoGasPrice()
-    function exec(TaskReceipt memory _TR) external override {
-
+    function exec(TaskReceipt memory _TR)
+        external
+        override
+        returns (uint256 executorCompensation)
+    {
         // Store startGas for gas-consumption based cost and payout calcs
         uint256 startGas = gasleft();
 
@@ -291,14 +294,15 @@ contract GelatoCore is IGelatoCore, GelatoExecutors {
 
         if (executionResult == ExecutionResult.ExecSuccess) {
             // END-1: SUCCESS => TaskReceipt was deleted in _exec & Reward
-            (uint256 executorSuccessFee, uint256 sysAdminSuccessFee) = _processProviderPayables(
+            uint256 sysAdminSuccessFee;
+            (executorCompensation, sysAdminSuccessFee) = _processProviderPayables(
                 _TR.provider.addr,
                 ExecutorPay.Reward,
                 startGas,
                 gasLimit,
                 gelatoGasPrice
             );
-            emit LogExecSuccess(msg.sender, _TR.id, executorSuccessFee, sysAdminSuccessFee);
+            emit LogExecSuccess(msg.sender, _TR.id, executorCompensation, sysAdminSuccessFee);
 
         } else if (executionResult == ExecutionResult.CanExecFailed) {
             // END-2: CanExecFailed => No TaskReceipt Deletion & No Refund
@@ -313,14 +317,14 @@ contract GelatoCore is IGelatoCore, GelatoExecutors {
                 // END-3.2: ExecReverted BUT gelatoMaxGas was used
                 //  => TaskReceipt Deletion (delete in _exec was reverted) & Refund
                 delete taskReceiptHash[_TR.id];
-                (uint256 executorRefund,) = _processProviderPayables(
+                (executorCompensation,) = _processProviderPayables(
                     _TR.provider.addr,
                     ExecutorPay.Refund,
                     startGas,
                     gasLimit,
                     gelatoGasPrice
                 );
-                emit LogExecReverted(msg.sender, _TR.id, executorRefund, reason);
+                emit LogExecReverted(msg.sender, _TR.id, executorCompensation, reason);
             }
         }
     }

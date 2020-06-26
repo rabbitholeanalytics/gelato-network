@@ -3,7 +3,6 @@ pragma solidity ^0.6.10;
 
 import {GelatoUserProxy} from "../user_proxies/gelato_user_proxy/GelatoUserProxy.sol";
 
-
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive

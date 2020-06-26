@@ -157,7 +157,8 @@ interface IGelatoCore {
     ///   successfully executed, or when the execution failed, despite of gelatoMaxGas usage.
     ///   In the latter case Executors are refunded by the Task Provider.
     /// @param _TR TaskReceipt: id, userProxy, Task.
-    function exec(TaskReceipt calldata _TR) external;
+    /// @return executorCompensation: Refund or Reward.
+    function exec(TaskReceipt calldata _TR) external returns(uint256);
 
     /// @notice Cancel task
     /// @dev Callable only by userProxy or selected provider
