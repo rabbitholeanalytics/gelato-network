@@ -7,8 +7,6 @@ import {SafeERC20} from "../../external/SafeERC20.sol";
 import {SafeMath} from "../../external/SafeMath.sol";
 import {IConditionalTokens, IERC1155, IFixedProductMarketMaker} from "../../dapp_interfaces/conditional_tokens/IConditionalTokens.sol";
 
-import "@nomiclabs/buidler/console.sol";
-
 /// @title ActionWithdrawLiquidity
 /// @author Hilmar Orth
 /// @notice Gelato Action that
